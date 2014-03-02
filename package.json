@@ -1,0 +1,25 @@
+{
+	"name": "cross-youtube-downloader",
+	"main": "index.html",
+	"description": "Youtube downloader that runs on Linux, Mac OSX and Windows.",
+	"version": "0.1.0",
+	"keywords": ["cross", "youtube", "downloader", "kuzirashi"],
+	"window": {
+		"title": "Cross Youtube Downloader",
+		"width": 800,
+		"height": 500,
+		"position": "mouse",
+		"min_width": 400,
+		"min_height": 200,
+		"max_width": 800,
+		"max_height": 600
+	},
+	"webkit": {
+		"plugin": true
+	},
+	"maintainers":[ {
+		"name": "Daniel",
+		"email": "kuzirashi@interia.pl",
+		"web": "http://kuzirashi.github.io"
+	}]
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cross Youtube Downloader</title>
+		<script src="js/jquery-2.1.0.min.js"></script>
+		<script>
+		var fs = require('fs');
+		fs.readdir('.', function(err, files) {
+			$.each(files, function(index, item) {
+				$('.projects').append('<li>' + item + '</li>');
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<h1>Cross Youtube Downloader</h1>
+		We are using node.js <script>document.write(process.version)</script>.<br/>
+		Files in directory:<br/>
+		<ul class="projects">
+		</ul>
+	</body>
+</html>

@@ -2,9 +2,13 @@
 <html>
 	<head>
 		<title>Cross Youtube Downloader</title>
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Sans+Mono|Droid+Serif:400,700,400italic">
+		<link rel="stylesheet" href="css/jquery-ui.min.css">
+		<link rel="stylesheet" href="css/style.css"/>
 		<script src="lib/jquery-2.1.0.min.js"></script>
 		<script>
 		os = require('os'),
+		gui = require('nw.gui'),
 		Column = require('./lib/database/Column.js'),
 		ConfigKey = require('./lib/database/ConfigKey.js'),
 		Config = require('./lib/database/Config.js')
@@ -17,16 +21,47 @@
 		</script>
 	</head>
 	<body>
-		<h1>Cross Youtube Downloader</h1>
-		Your platform: <b><script>document.write(conf.getKey('platform').Value)</script></b><br/>
-		<button class="dropTBL">Drop Config Table</button>
+		<script type="text/x-handlebars">
+		<h5 class="top-header">Cross <span class="thin">( platform )</span> YouTube Downloader</h5>
+		<button class="btn btn-red btn-top-right btn-close"><i class="icon-close"></i> Close</button>
+		<hr/>
+		</section>
+		<section>
+			<nav>
+				<li>{{#link-to 'index'}}Download{{/link-to}}</li>
+				<li>{{#link-to 'queue'}}Queue{{/link-to}}</li>
+				<li>{{#link-to 'preferences'}}Preferences{{/link-to}}</li>
+				<li>{{#link-to 'about'}}About{{/link-to}}</li>
+			</nav>
+		<br/>
+		{{outlet}}
+
+		<div class="bottom-panel">
+			<div class="infobar info" style="border-radius: 0px; width: inherit; margin-bottom: 0px;">
+				<button class="btn btn-clear"><i class="icon-down"></i> 0</button>
+			</div>
+		</div>
+		</script>
+
+		<script type="text/x-handlebars" id="index">
+			<h6>Download</h6>
+			<input type="text" class="ytLink" placeholder="YouTube Video Link"/><button class="btn btn-blue btn-download">Download</button>
+		</script>
+
+		<script type="text/x-handlebars" id="preferences">
+			Choose directory: {{#view App.DirectoryChooser nwdirectory=""}}<br/> Current: <span class="btn">{{view.directory}}</span>{{/view}}
+		</script>
+
 		<script>
-		$('.dropTBL').click(function() {
-			db.transaction(function(tx) {
-				tx.executeSql('DROP TABLE `config`;');
-				alert('Table `config` dropped.');
-			});
+		$('.btn-close').click(function() {
+			var win = gui.Window.get();
+			win.close();
 		});
 		</script>
+
+		<script src="lib/jquery-ui.min.js"></script>
+		<script src="lib/handlebars-1.1.2.js"></script>
+		<script src="lib/ember-1.4.0.js"></script>
+		<script src="app.js"></script>
 	</body>
 </html>

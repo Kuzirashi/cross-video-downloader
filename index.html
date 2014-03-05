@@ -9,15 +9,7 @@
 		<script>
 		os = require('os'),
 		gui = require('nw.gui'),
-		Column = require('./lib/database/Column.js'),
-		ConfigKey = require('./lib/database/ConfigKey.js'),
-		Config = require('./lib/database/Config.js')
-
-		var db = openDatabase('app-db', '1.0', 'Cross platform YouTube downloader database.', 2 * 1024 * 1024);
-
-		conf = new Config();
-		conf.insert(db, true);
-		conf.setValue('platform', os.platform(), db);
+		Column = require('./lib/database/Column.js');
 		</script>
 	</head>
 	<body>
@@ -49,8 +41,11 @@
 		</script>
 
 		<script type="text/x-handlebars" id="preferences">
-			Choose directory: {{#view App.DirectoryChooser nwdirectory=""}}<br/> Current: <span class="btn">{{view.directory}}</span>{{/view}}
+			{{#view App.DirectoryChooser nwdirectory=""}}
+				{{view App.ChooseDirectoryButton}} | Current: <span class="btn">{{directory}}</span>
+			{{/view}}
 		</script>
+
 
 		<script>
 		$('.btn-close').click(function() {

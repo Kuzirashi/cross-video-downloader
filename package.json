@@ -1,9 +1,9 @@
 {
 	"name": "cross-youtube-downloader",
 	"main": "index.html",
-	"description": "Youtube downloader that runs on Linux, Mac OSX and Windows.",
+	"description": "Youtube downloader that runs on Linux, Mac OSX and Windows written in node-webkit.",
 	"version": "0.1.0",
-	"keywords": ["cross", "youtube", "downloader", "kuzirashi"],
+	"keywords": ["cross", "youtube", "downloader", "kuzirashi", "node-webkit"],
 	"window": {
 		"title": "Cross Youtube Downloader",
 		"width": 800,

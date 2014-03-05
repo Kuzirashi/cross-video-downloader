@@ -1,6 +1,6 @@
 #Cross Youtube Downloader
 
-Youtube downloader that runs on Linux, Mac OSX and Windows.
+Youtube downloader that runs on Linux, Mac OSX and Windows written in node-webkit.
 
 ##How to use
 

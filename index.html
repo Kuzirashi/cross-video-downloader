@@ -41,9 +41,12 @@
 		</script>
 
 		<script type="text/x-handlebars" id="preferences">
+			<h6>User Preferences</h6>
 			{{#view App.DirectoryChooser nwdirectory=""}}
 				{{view App.ChooseDirectoryButton}} | Current: <span class="btn">{{directory}}</span>
 			{{/view}}
+			<br/>
+			{{view App.DropTable}}
 		</script>
 
 

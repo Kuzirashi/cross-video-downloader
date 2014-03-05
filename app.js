@@ -13,13 +13,7 @@ Ember.TextField.reopen({
 App.ConfigKey = Em.Object.extend({
 	Name: '',
 	DefaultValue: '',
-	Value: '',
-	LastUpdate: new Date(),
-
-	Update: function(value) {
-		this.set('Value', value);
-		this.set('LastUpdate', new Date());
-	}
+	Value: ''
 });
 
 App.Config = Em.Object.extend({
@@ -42,10 +36,9 @@ App.Config = Em.Object.extend({
 	insert: function(database, createTable) {
 		columns = this.get('columns');
 		colNames = '';
-		for(i = 0; i < columns.length; i++) {
+		for(i = 0; i < columns.length; i++)
 			if(columns[i].Name != 'Id')
 				colNames += (columns.length - 1 == i) ? '`' + columns[i].Name + '`' : '`' + columns[i].Name + '`, ';
-		}
 
 		origin = this;
 		keys = this.get('keys');
@@ -66,19 +59,21 @@ App.Config = Em.Object.extend({
 		this.get('keys').filterBy('Name', key)[0].set('Value', value);
 	},
 
-	getKey: function(name) {
-		return this.get('keys').filterBy('Name', name)[0];
-	},
-
 	getLatestData: function(db) {
 		origin = this;
 		db.transaction(function(tx) {
 			tx.executeSql('SELECT * FROM `config`', [], function(tx, result) {
-				for(var i = 0; i < result.rows.length; i++) {
-					item = result.rows.item(i);
-					origin.get('keys')[i].set('Value', item.Value);
-				}
+				for(var i = 0; i < result.rows.length; i++)
+					origin.get('keys')[i].set('Value', result.rows.item(i).Value);
 			});
+		});
+	},
+
+	resetConfig: function(db) {
+		origin = this;
+		db.transaction(function(tx) {
+			tx.executeSql('DROP TABLE `config`');
+			origin.insert(db, true);
 		});
 	}
 });
@@ -88,17 +83,15 @@ db = openDatabase('app-db', '1.0', 'Cross platform YouTube downloader database.'
 config = App.Config.create();
 config.insert(db, true);
 
-App.DirectoryChooser = Ember.TextField.extend({
+App.DirectoryChooser = Em.TextField.extend({
 	type: 'file',
-	nwdirectory: '',
-	directory: 'ss',
 	classNames: ['directory-chooser'],
 	change: function(evt) {
 		config.get('keys').filterBy('Name', 'downloadPath')[0].set('Value', evt.target.value);
 	}
 });
 
-App.ChooseDirectoryButton = Ember.View.extend({
+App.ChooseDirectoryButton = Em.View.extend({
 	tagName: 'span',
 	classNames: ['btn', 'btn-blue'],
 	template: Em.Handlebars.compile('Choose download directory'),
@@ -107,7 +100,7 @@ App.ChooseDirectoryButton = Ember.View.extend({
 	}
 });
 
-App.PreferencesController = Ember.Controller.extend({
+App.PreferencesController = Em.Controller.extend({
 	model: config,
 	directory: function() {
 		downloadPath = this.get('model.keys').filterBy('Name', 'downloadPath')[0];
@@ -120,4 +113,13 @@ App.PreferencesController = Ember.Controller.extend({
 
 App.PreferencesView = Em.View.extend({
 	controller: App.PreferencesController.create({ model: config })
+});
+
+App.DropTable = Em.View.extend({
+	tagName: 'button',
+	classNames: ['btn', 'btn-red'],
+	template: Em.Handlebars.compile('Reset config'),
+	click: function() {
+		config.resetConfig();
+	}
 });

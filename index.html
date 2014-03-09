@@ -8,9 +8,10 @@
 		<script src="lib/jquery-2.1.0.min.js"></script>
 		<script src="lib/jquery-ui.min.js"></script>
 		<script>
+		require('coffee-script/register')
 		os = require('os'),
 		gui = require('nw.gui'),
-		Column = require('./lib/database/Column.js');
+		Column = require('./lib/database/Column.coffee');
 		</script>
 	</head>
 	<body>
@@ -57,7 +58,8 @@
 
 
 		<script>
-		$('.btn-close').click(function() {
+		$(document).on('click', '.btn-close', function() {
+			console.log('btn close');
 			var win = gui.Window.get();
 			win.close();
 		});

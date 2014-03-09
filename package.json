@@ -1,25 +1,36 @@
 {
-	"name": "cross-youtube-downloader",
-	"main": "index.html",
-	"description": "Youtube downloader that runs on Linux, Mac OSX and Windows written in node-webkit.",
-	"version": "0.1.0",
-	"keywords": ["cross", "youtube", "downloader", "kuzirashi", "node-webkit"],
-	"window": {
-		"title": "Cross Youtube Downloader",
-		"width": 800,
-		"height": 600,
-		"position": "mouse",
-		"min_width": 400,
-		"min_height": 200,
-		"toolbar": true,
-		"frame": true
-	},
-	"webkit": {
-		"plugin": true
-	},
-	"maintainers":[ {
-		"name": "Daniel",
-		"email": "kuzirashi@interia.pl",
-		"web": "http://kuzirashi.github.io"
-	}]
+  "name": "cross-youtube-downloader",
+  "main": "index.html",
+  "description": "Youtube downloader that runs on Linux, Mac OSX and Windows written in node-webkit.",
+  "version": "0.1.0",
+  "keywords": [
+    "cross",
+    "youtube",
+    "downloader",
+    "kuzirashi",
+    "node-webkit"
+  ],
+  "window": {
+    "title": "Cross Youtube Downloader",
+    "width": 800,
+    "height": 600,
+    "position": "mouse",
+    "min_width": 400,
+    "min_height": 200,
+    "toolbar": true,
+    "frame": true
+  },
+  "webkit": {
+    "plugin": true
+  },
+  "maintainers": [
+    {
+      "name": "Daniel",
+      "email": "kuzirashi@interia.pl",
+      "web": "http://kuzirashi.github.io"
+    }
+  ],
+  "dependencies": {
+    "coffee-script": "^1.7.1"
+  }
 }

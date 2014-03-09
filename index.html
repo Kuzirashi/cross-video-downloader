@@ -6,6 +6,7 @@
 		<link rel="stylesheet" href="css/jquery-ui.min.css">
 		<link rel="stylesheet" href="css/style.css"/>
 		<script src="lib/jquery-2.1.0.min.js"></script>
+		<script src="lib/jquery-ui.min.js"></script>
 		<script>
 		os = require('os'),
 		gui = require('nw.gui'),
@@ -13,26 +14,26 @@
 		</script>
 	</head>
 	<body>
-		<script type="text/x-handlebars">
-		<h5 class="top-header">Cross <span class="thin">( platform )</span> YouTube Downloader</h5>
-		<button class="btn btn-red btn-top-right btn-close"><i class="icon-close"></i> Close</button>
-		<hr/>
-		</section>
-		<section>
-			<nav>
-				<li>{{#link-to 'index'}}Download{{/link-to}}</li>
-				<li>{{#link-to 'queue'}}Queue{{/link-to}}</li>
-				<li>{{#link-to 'preferences'}}Preferences{{/link-to}}</li>
-				<li>{{#link-to 'about'}}About{{/link-to}}</li>
-			</nav>
-		<br/>
-		{{outlet}}
+		<script type="text/x-handlebars" id="application">
+			<h5 class="top-header">Cross <span class="thin">( platform )</span> YouTube Downloader</h5>
+			<button class="btn btn-red btn-top-right btn-close"><i class="icon-close"></i> Close</button>
+			<hr/>
+			</section>
+			<section>
+				<nav>
+					<li>{{#link-to 'index'}}Download{{/link-to}}</li>
+					<li>{{#link-to 'queue'}}Queue{{/link-to}}</li>
+					<li>{{#link-to 'preferences'}}Preferences{{/link-to}}</li>
+					<li>{{#link-to 'about'}}About{{/link-to}}</li>
+				</nav>
+			<br/>
+			{{outlet}}
 
-		<div class="bottom-panel">
-			<div class="infobar info" style="border-radius: 0px; width: inherit; margin-bottom: 0px;">
-				<button class="btn btn-clear"><i class="icon-down"></i> 0</button>
+			<div class="bottom-panel">
+				<div class="infobar info" style="border-radius: 0px; width: inherit; margin-bottom: 0px;">
+					<button class="btn btn-clear"><i class="icon-down"></i> 0</button>
+				</div>
 			</div>
-		</div>
 		</script>
 
 		<script type="text/x-handlebars" id="index">
@@ -46,7 +47,12 @@
 				{{view App.ChooseDirectoryButton}} | Current: <span class="btn">{{directory}}</span>
 			{{/view}}
 			<br/>
-			{{view App.DropTable}}
+			{{#view App.DropTable}}
+			Reset Config
+				{{#if view.modalActive}}
+					{{view.Modal}}
+				{{/if}}
+			{{/view}}
 		</script>
 
 
@@ -57,7 +63,7 @@
 		});
 		</script>
 
-		<script src="lib/jquery-ui.min.js"></script>
+		
 		<script src="lib/handlebars-1.1.2.js"></script>
 		<script src="lib/ember-1.4.0.js"></script>
 		<script src="app.js"></script>

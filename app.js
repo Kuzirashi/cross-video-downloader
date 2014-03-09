@@ -1,4 +1,4 @@
-App = Ember.Application.create();
+App = Em.Application.create();
 
 App.Router.map(function() {
 	this.route('queue');
@@ -6,7 +6,7 @@ App.Router.map(function() {
 	this.route('preferences');
 });
 
-Ember.TextField.reopen({
+Em.TextField.reopen({
 	attributeBindings: ['nwdirectory']
 });
 
@@ -70,10 +70,9 @@ App.Config = Em.Object.extend({
 	},
 
 	resetConfig: function(db) {
-		origin = this;
 		db.transaction(function(tx) {
 			tx.executeSql('DROP TABLE `config`');
-			origin.insert(db, true);
+			location.reload();
 		});
 	}
 });
@@ -116,10 +115,31 @@ App.PreferencesView = Em.View.extend({
 });
 
 App.DropTable = Em.View.extend({
+	modalActive: false,
 	tagName: 'button',
 	classNames: ['btn', 'btn-red'],
-	template: Em.Handlebars.compile('Reset config'),
+	attributeBindings: ['disabled'],
+	disabled: false,
 	click: function() {
-		config.resetConfig();
-	}
+		this.set('disabled', 'disabled');
+		this.set('modalActive', true);
+		console.log('click');
+	},
+	Modal: function() {
+		html = '<div title="Confirm action"><p>Are you sure you want to reset preferences?</p></div>';
+		$(html).dialog({
+			height: 200,
+			modal: true,
+			buttons: {
+				Yes: function() {
+					config.resetConfig(db);
+					$(this).dialog('close');
+				},
+				No: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		console.log('modal');
+	}.property('modalActive')
 });

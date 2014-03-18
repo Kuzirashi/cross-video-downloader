@@ -39,7 +39,10 @@
 
 		<script type="text/x-handlebars" id="index">
 			<h6>Download</h6>
-			<input type="text" class="ytLink" placeholder="YouTube Video Link"/><button class="btn btn-blue btn-download">Download</button>
+
+			{{#input type='url' class='ytLink' placeholder='YouTube Video Link' value=link}}
+				<button class="btn btn-blue btn-download" {{action 'parse'}}>Parse & Download</button>
+			{{/input}}
 		</script>
 
 		<script type="text/x-handlebars" id="preferences">

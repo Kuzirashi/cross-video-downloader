@@ -1,12 +1,18 @@
+ytDownload = require './lib/Yt-download.coffee'
+
 window.App = Em.Application.create()
 
+# BEGIN -- ROUTES
 App.Router.map ->
 	@route 'queue'
 	@route 'about'
 	@route 'preferences'
 
-Em.TextField.reopen
-	attributeBindings: ['nwdirectory']
+App.IndexRoute = Em.Route.extend
+	actions:
+		parse: ->
+			ytDownload this.get 'controller.link'
+# END -- ROUTES
 
 App.ConfigKey = Em.Object.extend
 	Name: ''
@@ -76,6 +82,23 @@ db = openDatabase 'app-db', '1.0', 'Cross platform YouTube downloader database.'
 
 config = App.Config.create()
 config.insert db, true
+config.setValue 'platform', os.platform(), db
+
+# BEGIN -- CONTROLLERS
+App.PreferencesController = Em.Controller.extend
+	model: config
+	directory: (->
+		downloadPath = @get('model.keys').filterBy('Name', 'downloadPath').get('firstObject').get 'Value'
+		if !!downloadPath
+			@get('model').setValue 'downloadPath', downloadPath, db
+		@get('model').getLatestData db
+		downloadPath
+	).property 'model.keys.@each.Value'
+# END -- CONTROLLERS
+
+# BEGIN -- DEFINING VIEWS
+Em.TextField.reopen
+	attributeBindings: ['nwdirectory']
 
 App.DirectoryChooser = Em.TextField.extend
 	type: 'file'
@@ -89,16 +112,6 @@ App.ChooseDirectoryButton = Em.View.extend
 	template: Em.Handlebars.compile 'Choose download directory'
 	click: ->
 		$('.directory-chooser').click()
-
-App.PreferencesController = Em.Controller.extend
-	model: config
-	directory: (->
-		downloadPath = @get('model.keys').filterBy('Name', 'downloadPath').get('firstObject').get 'Value'
-		if !!downloadPath
-			@get('model').setValue 'downloadPath', downloadPath, db
-		@get('model').getLatestData db
-		downloadPath
-	).property 'model.keys.@each.Value'
 
 App.PreferencesView = Em.View.extend
 	controller: App.PreferencesController.create
@@ -125,3 +138,4 @@ App.DropTable = Em.View.extend
 				No: ->
 					$(this).dialog 'close'
 	).property 'modalActive'
+# END -- DEFINING VIEWS

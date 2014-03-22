@@ -48,14 +48,6 @@ module.exports = class YtVideo
 					self.Formats.push new Format fallback_host, encoded.itag[i], el, encoded.type[i], encoded.url[i], newAr[i][1]
 				console.log self.Formats
 
-
-			console.log '[YtVideo::getInfo][Success]: Connected.'
-
-			@setEncoding 'utf8'
-			if @authorizationError
-				console.log '[YtVideo::getInfo][Error]: Authorization Error: ' + @authorizationError
-			else
-				console.log '[YtVideo::getInfo][Success]: Authorized a Secure SSL/TLS Connection.'
 			@write 'GET ' + path + ' HTTP/1.1\r\n' +
 				'Host: ' + host + '\r\n' +
 				'Connection: close\r\n' +

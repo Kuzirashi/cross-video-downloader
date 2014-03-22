@@ -1,4 +1,4 @@
-YtVideo = require './lib/Yt-download.coffee'
+YtVideo = require './lib/YtVideo.coffee'
 
 window.App = Em.Application.create()
 

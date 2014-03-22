@@ -1,4 +1,4 @@
-ytDownload = require './lib/Yt-download.coffee'
+YtVideo = require './lib/Yt-download.coffee'
 
 window.App = Em.Application.create()
 
@@ -11,7 +11,8 @@ App.Router.map ->
 App.IndexRoute = Em.Route.extend
 	actions:
 		parse: ->
-			ytDownload this.get 'controller.link'
+			ytVideo = new YtVideo this.get 'controller.link'
+			ytVideo.getInfo()
 # END -- ROUTES
 
 App.ConfigKey = Em.Object.extend

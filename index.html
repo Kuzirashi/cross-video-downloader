@@ -64,16 +64,12 @@
 		<img {{bind-attr src=thumbnailUrl}} style='float: left'/>
 		&nbsp;Quality:
 		<select>
-		
-			{{#each formats}}
-			sssssssss
-				<option>hd720 1280x720</option>
-			{{/each}}
-		</select>
-		Formats length: {{formats.length}} Formats = {{formats}} Each:
 		{{#each format in formats}}
-		One Format: {{format.quality}}
+			<option>{{format.quality}}</option>
 		{{/each}}
+		</select>
+
+
 		</script>
 
 		<script>

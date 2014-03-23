@@ -1,6 +1,15 @@
 YtVideo = require './lib/YtVideo.coffee'
 
 window.App = Em.Application.create()
+
+DS.JSONSerializer.reopen
+	serializeHasMany: (record, json, relationship) ->
+		key = relationship.key
+		relationshipType = DS.RelationshipChange.determineRelationshipType record.constructor, relationship
+
+		if relationshipType == 'manyToNone' || relationshipType == 'manyToMany' || relationshipType == 'manyToOne'
+			json[key] = Em.get(record, key).mapBy 'id'
+
 App.ApplicationAdapter = DS.FixtureAdapter.extend()
 
 App.Format = DS.Model.extend
@@ -11,8 +20,7 @@ App.Format = DS.Model.extend
 App.Video = DS.Model.extend
 	title: DS.attr 'string'
 	thumbnailUrl: DS.attr 'string'
-	formats: DS.hasMany 'format'
-
+	formats: DS.hasMany 'format', async: true
 
 # BEGIN -- ROUTES
 App.Router.map ->
@@ -31,19 +39,17 @@ App.IndexRoute = Em.Route.extend
 
 			self = this
 			ytVideo.on 'info', ->
-				video = self.store.createRecord 'video', { id: @Id, title: @Title, thumbnailUrl: @ThumbnailUrl }
-
+				video = self.store.createRecord 'video', { id: @Id, title: @Title, thumbnailUrl: @ThumbnailUrl}
 				@Formats.map (i) ->
-					format = self.store.createRecord 'format', { itag: i.itag, quality: i.quality, video: video }
-					console.log format.get('itag')
-					format.save()
-					console.log format.get('quality')
-					console.log video.get('formats')
-					video.get('formats').pushObject format
-				
-				#self.store.commit()
+					format = self.store.createRecord 'format', { itag: i.itag, quality: i.quality }
+					video.get('formats').then (f) ->
+						format.save()
+						f.pushObject format
+					#pushObject format
+					
+
 				video.save()
-				console.log video.get('formats').get('length')
+				console.log video.get('formats').get('firstObject')
 				console.log video.get('title')
 				self.transitionTo 'video', @Id
 
@@ -52,9 +58,6 @@ App.IndexRoute = Em.Route.extend
 App.VideoRoute = Em.Route.extend
 	model: (params) ->
 		vid = @store.find 'video', params.video_id
-		vid.then (item) ->
-			console.log item.get('formats').get('length')
-		vid
 # END -- ROUTES
 
 App.ConfigKey = Em.Object.extend

@@ -34,3 +34,7 @@ Then you can use:
 
 ##License
 Cross Youtube Downloader is licensed under [MIT License](https://github.com/Kuzirashi/cross-youtube-downloader/blob/master/LICENSE).
+
+[elementary CSS](https://github.com/nateify/elementary-CSS/) is licensed by Nate Cohen under the [MIT License](http://opensource.org/licenses/MIT)
+
+[elementary Icons](http://danrabbit.deviantart.com/art/elementary-Icons-65437279) are liscensed by [Daniel ForĂŠ](http://danrabbit.deviantart.com/) under the [GPL](http://www.gnu.org/licenses/gpl-3.0.txt)

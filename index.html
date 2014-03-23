@@ -59,6 +59,22 @@
 			{{/view}}
 		</script>
 
+		<script type="text/x-handlebars" id="video">
+		<h6>{{title}}</h6>
+		<img {{bind-attr src=thumbnailUrl}} style='float: left'/>
+		&nbsp;Quality:
+		<select>
+		
+			{{#each formats}}
+			sssssssss
+				<option>hd720 1280x720</option>
+			{{/each}}
+		</select>
+		Formats length: {{formats.length}} Formats = {{formats}} Each:
+		{{#each format in formats}}
+		One Format: {{format.quality}}
+		{{/each}}
+		</script>
 
 		<script>
 		$(document).on('click', '.btn-close', function() {
@@ -68,9 +84,9 @@
 		});
 		</script>
 
-		
 		<script src="lib/handlebars-1.1.2.js"></script>
 		<script src="lib/ember-1.4.0.js"></script>
+		<script src="lib/ember-data.min.js"></script>
 		<script type="text/coffeescript" src="app.coffee"></script>
 		<script src="lib/coffeescript-1.7.1.min.js"></script>
 	</body>

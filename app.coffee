@@ -1,22 +1,60 @@
 YtVideo = require './lib/YtVideo.coffee'
 
 window.App = Em.Application.create()
+App.ApplicationAdapter = DS.FixtureAdapter.extend()
+
+App.Format = DS.Model.extend
+	video: DS.belongsTo 'video'
+	itag: DS.attr 'string'
+	quality: DS.attr 'string'
+
+App.Video = DS.Model.extend
+	title: DS.attr 'string'
+	thumbnailUrl: DS.attr 'string'
+	formats: DS.hasMany 'format'
+
 
 # BEGIN -- ROUTES
 App.Router.map ->
 	@route 'queue'
 	@route 'about'
 	@route 'preferences'
+	@route 'video', path: 'video/:video_id'
 
 App.IndexRoute = Em.Route.extend
 	actions:
 		parse: ->
-			ytVideo = new YtVideo this.get 'controller.link'
+			ytVideo = new YtVideo @get 'controller.link'
 
 			ytVideo.on 'error', (e) ->
 				alert e
 
+			self = this
+			ytVideo.on 'info', ->
+				video = self.store.createRecord 'video', { id: @Id, title: @Title, thumbnailUrl: @ThumbnailUrl }
+
+				@Formats.map (i) ->
+					format = self.store.createRecord 'format', { itag: i.itag, quality: i.quality, video: video }
+					console.log format.get('itag')
+					format.save()
+					console.log format.get('quality')
+					console.log video.get('formats')
+					video.get('formats').pushObject format
+				
+				#self.store.commit()
+				video.save()
+				console.log video.get('formats').get('length')
+				console.log video.get('title')
+				self.transitionTo 'video', @Id
+
 			ytVideo.getInfo()
+
+App.VideoRoute = Em.Route.extend
+	model: (params) ->
+		vid = @store.find 'video', params.video_id
+		vid.then (item) ->
+			console.log item.get('formats').get('length')
+		vid
 # END -- ROUTES
 
 App.ConfigKey = Em.Object.extend

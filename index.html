@@ -29,7 +29,6 @@
 				</nav>
 			<br/>
 			{{outlet}}
-
 			<div class="bottom-panel">
 				<div class="infobar info" style="border-radius: 0px; width: inherit; margin-bottom: 0px;">
 					<button class="btn btn-clear"><i class="icon-down"></i> 0</button>
@@ -39,7 +38,6 @@
 
 		<script type="text/x-handlebars" id="index">
 			<h6>Download</h6>
-
 			{{#input type='url' class='ytLink' placeholder='YouTube Video Link' value=link}}
 				<button class="btn btn-blue btn-download" {{action 'parse'}}>Parse & Download</button>
 			{{/input}}
@@ -68,8 +66,6 @@
 			<option>{{format.quality}}</option>
 		{{/each}}
 		</select>
-
-
 		</script>
 
 		<script>

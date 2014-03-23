@@ -43,21 +43,11 @@ App.IndexRoute = Em.Route.extend
 				@Formats.map (i) ->
 					format = self.store.createRecord 'format', { itag: i.itag, quality: i.quality }
 					video.get('formats').then (f) ->
-						format.save()
 						f.pushObject format
-					#pushObject format
-					
 
-				video.save()
-				console.log video.get('formats').get('firstObject')
-				console.log video.get('title')
 				self.transitionTo 'video', @Id
 
 			ytVideo.getInfo()
-
-App.VideoRoute = Em.Route.extend
-	model: (params) ->
-		vid = @store.find 'video', params.video_id
 # END -- ROUTES
 
 App.ConfigKey = Em.Object.extend

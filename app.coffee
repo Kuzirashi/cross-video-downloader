@@ -12,6 +12,10 @@ App.IndexRoute = Em.Route.extend
 	actions:
 		parse: ->
 			ytVideo = new YtVideo this.get 'controller.link'
+
+			ytVideo.on 'error', (e) ->
+				alert e
+
 			ytVideo.getInfo()
 # END -- ROUTES
 

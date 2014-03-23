@@ -1,19 +1,26 @@
 tls = require 'tls'
-qs = require 'querystring'
-Format = require './Format.coffee'
+qs 	= require 'querystring'
+EventEmitter = require('events').EventEmitter
+Format 	= require './Format.coffee'
 
 GET_VIDEO_INFO_PATH = '/get_video_info?el=detailpage&video_id='
 
-module.exports = class YtVideo
+module.exports = class YtVideo extends EventEmitter
 	constructor: (@Url) ->
-		regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
-		match = @Url.match regExp
+		EventEmitter.call this
+
+	getId: ->
+		match = @Url.match /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
 		if match && match[2].length == 11
-			@Id = match[2]
+			match[2]
 		else
-			throw new Error 'Invalid YouTube link.'
+			@emit 'error', 'Invalid YouTube link.'
+			false
 
 	getInfo: ->
+		@Id = @getId()
+		if !@Id
+			return
 		host = 'www.youtube.com'
 		path = GET_VIDEO_INFO_PATH + @Id
 		raw = ''
@@ -23,30 +30,15 @@ module.exports = class YtVideo
 			@on 'data', (d) ->
 				raw += d
 
-			@on 'error', (e) ->
-				console.log '[YtVideo::getInfo][Error]: ', e
-
 			@on 'end', =>
-				data = qs.parse raw
-				encoded = qs.parse data.url_encoded_fmt_stream_map
-				console.log encoded
-				resolutions = data.fmt_list
-				newAr = []
-				for res, i in resolutions.split ','
-					newAr[i] = res.split '/'
+				data = qs.parse raw.split("\r\n\r\n")[1].split("\r\n")[1]
 
-				for el, i in encoded.quality
-					if Array.isArray encoded.fallback_host
-						fallback_host = encoded.fallback_host[i]
-					else
-						fallback_host = encoded.fallback_host
+				resolutions = data.fmt_list.split(',').map (v) ->
+					v = v.split('/')[1]
 
-					if el.match /,/
-						el.split ','
-						el = el[0]
-
-					self.Formats.push new Format fallback_host, encoded.itag[i], el, encoded.type[i], encoded.url[i], newAr[i][1]
-				console.log self.Formats
+				encoded = data.url_encoded_fmt_stream_map.split(',').map (v, i) ->
+					v = qs.parse v
+					self.Formats.push new Format v.fallback_host, v.itag, v.quality, v.type, v.url, resolutions[i]
 
 			@write 'GET ' + path + ' HTTP/1.1\r\n' +
 				'Host: ' + host + '\r\n' +

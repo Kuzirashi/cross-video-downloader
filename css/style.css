@@ -591,6 +591,7 @@ textarea {    overflow-y: auto }
 
 .top-header {
 	margin-top: 0;
+	font-family: 'Strato'; 
 }
 
 .btn-top-right {
@@ -612,3 +613,18 @@ textarea {    overflow-y: auto }
 	height: 30px;
 	width: 232px;
 }
+
+@font-face {
+    font-family: 'Strato';
+        src: url('../fonts/Strato-unlinked.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+      }
+
+@font-face {
+    font-family: 'Strato';
+        src: url('../fonts/Strato-linked.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+      }
+

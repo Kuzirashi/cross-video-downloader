@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		<script type="text/x-handlebars" id="application">
-			<h5 class="top-header">Cross <span class="thin">( platform )</span> Video Downloader</h5>
+			<h5 class="top-header">Cross Video Downloader</h5>
 			<button class="btn btn-red btn-top-right btn-close"><i class="icon-close"></i> Close</button>
 			<hr/>
 			</section>
@@ -40,8 +40,7 @@
 		<script type="text/x-handlebars" id="index">
 			<h6>Download</h6>
 			{{input type='url' class='ytLink' placeholder='YouTube Video Link' value=link}}
-				<button class="btn btn-blue btn-download" {{action 'parse'}}>Parse & Download</button>
-	
+			<button class="btn btn-blue btn-download" {{action 'parse'}}>Parse & Download</button>
 		</script>
 
 		<script type="text/x-handlebars" id="preferences">
@@ -59,18 +58,14 @@
 		</script>
 
 		<script type="text/x-handlebars" id="video">
-		<h6>{{title}}</h6>
-		<img {{bind-attr src=thumbnailUrl}} style='float: left'/>
+		<h6>{{model.title}}</h6>
+		<img {{bind-attr src=model.thumbnailUrl}} style='float: left'/>
 		<section>
-			&nbsp;Name: {{input value=filenameTitle}}
+			&nbsp;Name: {{input value=model.filenameTitle}}
 		</section>
 		&nbsp;Quality:
-		<select>
-		{{#each format in formats}}
-			<option>{{format.quality}} - {{format.resolution}} - {{format.type}}</option>
-		{{/each}}
-		</select>
-		<button class="btn btn-blue">Download</button>
+		{{view Em.Select content=model.formats optionValuePath='content.id' optionLabelPath='content.label' value=selectedFormat}}
+		<button class="btn btn-blue" {{action 'download'}}>Download</button>
 		</script>
 
 		<script>

@@ -18,6 +18,10 @@ App.Format = DS.Model.extend
 	quality: DS.attr 'string'
 	resolution: DS.attr 'string'
 	type: DS.attr 'string'
+	url: DS.attr 'string'
+	label: (->
+		@get('quality') + ' ' + @get('resolution') + ' ' + @get('type')
+	).property 'quality', 'resolution', 'type'
 
 App.Video = DS.Model.extend
 	title: DS.attr 'string'
@@ -47,7 +51,7 @@ App.IndexRoute = Em.Route.extend
 				video = self.store.createRecord 'video', id: @Id, title: @Title, thumbnailUrl: @ThumbnailUrl
 
 				@Formats.map (i) ->
-					format = self.store.createRecord 'format', itag: i.itag, quality: i.quality, resolution: i.resolution, type: i.type
+					format = self.store.createRecord 'format', itag: i.itag, quality: i.quality, resolution: i.resolution, type: i.type, url: i.url
 					video.get('formats').then (f) ->
 						f.pushObject format
 
@@ -136,6 +140,13 @@ App.PreferencesController = Em.Controller.extend
 		@get('model').getLatestData db
 		downloadPath
 	).property 'model.keys.@each.Value'
+
+App.VideoController = Em.Controller.extend
+	selectedFormat: 'fixture-0'
+	actions:
+		download: ->
+			@store.find('format', @get('selectedFormat')).then (f) ->
+				alert 'Link do pobrania filmiku: ' + f.get('url')
 # END -- CONTROLLERS
 
 # BEGIN -- DEFINING VIEWS
@@ -167,7 +178,7 @@ App.DropTable = Em.View.extend
 	attributeBindings: ['disabled']
 	disabled: false
 	click: ->
-		@set 'disabled', 'disabled'
+		@set 'disabled', true
 		@set 'modalActive', true
 	Modal: (->
 		self = this

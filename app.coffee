@@ -51,7 +51,7 @@ App.IndexRoute = Em.Route.extend
 					video.get('formats').then (f) ->
 						f.pushObject format
 
-				self.transitionTo 'video', @Id
+				self.transitionToAnimated 'video', main: 'fade', @Id
 
 			ytVideo.getInfo()
 # END -- ROUTES
@@ -139,6 +139,8 @@ App.PreferencesController = Em.Controller.extend
 # END -- CONTROLLERS
 
 # BEGIN -- DEFINING VIEWS
+App.IndexView = Em.View.extend()
+App.VideoView = Em.View.extend()
 Em.TextField.reopen
 	attributeBindings: ['nwdirectory']
 
@@ -157,7 +159,6 @@ App.ChooseDirectoryButton = Em.View.extend
 
 App.PreferencesView = Em.View.extend
 	controller: App.PreferencesController.create
-		model: config
 
 App.DropTable = Em.View.extend
 	modalActive: false
@@ -169,6 +170,7 @@ App.DropTable = Em.View.extend
 		@set 'disabled', 'disabled'
 		@set 'modalActive', true
 	Modal: (->
+		self = this
 		$('<div title="Confirm action"><p>Are you sure you want to reset preferences?</p></div>').dialog
 			height: 200
 			modal: true
@@ -178,6 +180,8 @@ App.DropTable = Em.View.extend
 					$(this).dialog 'close'
 				No: ->
 					$(this).dialog 'close'
+					self.set 'disabled', false
+					self.set 'modalActive', false
 		''
 	).property 'modalActive'
 # END -- DEFINING VIEWS

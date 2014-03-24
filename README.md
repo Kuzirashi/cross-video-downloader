@@ -1,11 +1,11 @@
-#Cross Youtube Downloader
-
-Youtube downloader that runs on Linux, Mac OSX and Windows written in node-webkit.
+#Cross Video Downloader
+----
+Video downloader from YouTube that runs on Linux, Mac OSX and Windows written in node-webkit.
 
 ##Installation
 First, download project files. You can do this via:
 ~~~~ git
-git clone https://github.com/Kuzirashi/cross-youtube-downloader.git
+git clone https://github.com/Kuzirashi/cross-video-downloader.git
 ~~~~
 Then, you need [CoffeeScript](https://github.com/jashkenas/coffee-script) installed. If you have [node package manager](https://github.com/npm/npm) you can satisfy all requirements by running following command from application's folder:
 ~~~~ bash
@@ -33,7 +33,7 @@ Then you can use:
 ~~~~
 
 ##License
-Cross Youtube Downloader is licensed under [MIT License](https://github.com/Kuzirashi/cross-youtube-downloader/blob/master/LICENSE).
+Cross Video Downloader is licensed under [MIT License](https://github.com/Kuzirashi/cross-video-downloader/blob/master/LICENSE).
 
 [elementary CSS](https://github.com/nateify/elementary-CSS/) is licensed by Nate Cohen under the [MIT License](http://opensource.org/licenses/MIT).
 

@@ -156,9 +156,13 @@ hr {
 
 /* Optional Styles */
 body {
-	background: #fff;
 	max-width: 1280px;
 	padding-bottom: 32px;
+	background-color: #fff; 
+	background-image: 
+	linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+	linear-gradient(#eee .1em, transparent .1em);
+	background-size: 100% 1.2em;
 }
 .logo {    margin-bottom: 45px }
 .logo img {

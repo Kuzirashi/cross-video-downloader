@@ -16,11 +16,16 @@ App.Format = DS.Model.extend
 	video: DS.belongsTo 'video'
 	itag: DS.attr 'string'
 	quality: DS.attr 'string'
+	resolution: DS.attr 'string'
+	type: DS.attr 'string'
 
 App.Video = DS.Model.extend
 	title: DS.attr 'string'
 	thumbnailUrl: DS.attr 'string'
 	formats: DS.hasMany 'format', async: true
+	filenameTitle: (->
+		@get('title').replace /[\\/:"*?<>|]+/g, ''
+	).property 'title'
 
 # BEGIN -- ROUTES
 App.Router.map ->
@@ -39,9 +44,10 @@ App.IndexRoute = Em.Route.extend
 
 			self = this
 			ytVideo.on 'info', ->
-				video = self.store.createRecord 'video', { id: @Id, title: @Title, thumbnailUrl: @ThumbnailUrl}
+				video = self.store.createRecord 'video', id: @Id, title: @Title, thumbnailUrl: @ThumbnailUrl
+
 				@Formats.map (i) ->
-					format = self.store.createRecord 'format', { itag: i.itag, quality: i.quality }
+					format = self.store.createRecord 'format', itag: i.itag, quality: i.quality, resolution: i.resolution, type: i.type
 					video.get('formats').then (f) ->
 						f.pushObject format
 
@@ -163,8 +169,7 @@ App.DropTable = Em.View.extend
 		@set 'disabled', 'disabled'
 		@set 'modalActive', true
 	Modal: (->
-		html = '<div title="Confirm action"><p>Are you sure you want to reset preferences?</p></div>'
-		$(html).dialog
+		$('<div title="Confirm action"><p>Are you sure you want to reset preferences?</p></div>').dialog
 			height: 200
 			modal: true
 			buttons:
@@ -173,5 +178,6 @@ App.DropTable = Em.View.extend
 					$(this).dialog 'close'
 				No: ->
 					$(this).dialog 'close'
+		''
 	).property 'modalActive'
 # END -- DEFINING VIEWS

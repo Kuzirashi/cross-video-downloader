@@ -32,7 +32,7 @@ Then you can use:
 ./run.sh
 ~~~~
 
-##License
+##License and atributions
 Cross Video Downloader is licensed under [MIT License](https://github.com/Kuzirashi/cross-video-downloader/blob/master/LICENSE).
 
 [elementary CSS](https://github.com/nateify/elementary-CSS/) is licensed by Nate Cohen under the [MIT License](http://opensource.org/licenses/MIT).

@@ -1,4 +1,6 @@
-YtVideo = require './lib/YtVideo.coffee'
+YtVideo = require './lib/modules/YtVideo.coffee'
+DownloadHandler = require './lib/modules/DownloadHandler.coffee'
+Column = require('./lib/modules/Column.coffee');
 
 window.App = Em.Application.create()
 
@@ -31,7 +33,6 @@ App.Video = DS.Model.extend
 		@get('title').replace /[\\/:"*?<>|]+/g, ''
 	).property 'title'
 
-# BEGIN -- ROUTES
 App.Router.map ->
 	@route 'queue'
 	@route 'about'
@@ -58,13 +59,15 @@ App.IndexRoute = Em.Route.extend
 				self.transitionToAnimated 'video', main: 'fade', @Id
 
 			ytVideo.getInfo()
-# END -- ROUTES
 
 App.ConfigKey = Em.Object.extend
 	Name: ''
 	DefaultValue: ''
 	Value: ''
 
+##
+# @class Config
+# @namespace Application
 App.Config = Em.Object.extend
 	keys: [
 		App.ConfigKey.create
@@ -84,6 +87,10 @@ App.Config = Em.Object.extend
 		new Column 'Value', 'TEXT'
 	]
 
+	##
+	# Method to get complete SQL code to create Config table.
+	# @return {String} SQL code for Config table.
+	# @memberof Config
 	getCreateTableSQL: ->
 		columns = @get 'columns'
 		len = columns.length
@@ -130,7 +137,6 @@ config = App.Config.create()
 config.insert db, true
 config.setValue 'platform', os.platform(), db
 
-# BEGIN -- CONTROLLERS
 App.PreferencesController = Em.Controller.extend
 	model: config
 	directory: (->
@@ -146,10 +152,9 @@ App.VideoController = Em.Controller.extend
 	actions:
 		download: ->
 			@store.find('format', @get('selectedFormat')).then (f) ->
+				downloadHandler = new DownloadHandler();
 				alert 'Link do pobrania filmiku: ' + f.get('url')
-# END -- CONTROLLERS
 
-# BEGIN -- DEFINING VIEWS
 App.IndexView = Em.View.extend()
 App.VideoView = Em.View.extend()
 Em.TextField.reopen
@@ -195,4 +200,3 @@ App.DropTable = Em.View.extend
 					self.set 'modalActive', false
 		''
 	).property 'modalActive'
-# END -- DEFINING VIEWS

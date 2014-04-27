@@ -1,0 +1,5 @@
+output: docs
+title: Cross Video Downloader
+quite: false
+sources:
+  - lib

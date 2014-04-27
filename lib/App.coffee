@@ -66,6 +66,7 @@ App.ConfigKey = Em.Object.extend
 	Value: ''
 
 ##
+# Class responsible for managing user's config
 # @class Config
 # @namespace Application
 App.Config = Em.Object.extend

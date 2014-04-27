@@ -35,6 +35,9 @@ module.exports = class YtVideo extends EventEmitter
 			@emit 'error', 'Invalid YouTube link.'
 			false
 
+	###
+	# Get Info
+	###
 	getInfo: ->
 		@Id = @getId()
 		if !@Id

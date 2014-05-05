@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Cross Video Downloader - modules/YtVideo.coffee</title><script>if (location.protocol.match(/^http/) && location.pathname.match('\.html') === null && location.pathname.slice(-1) !== '/') {
+  location.href = location.href + '/';
+}</script><link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><ul class="nav navbar-nav"><li><a href="../index.html">Home</a></li><li><a href="../classes/index.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - modules/YtVideo.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/App.coffee.html">App.coffee</a></li><li><a href="../files/modules.Column.coffee.html">modules/Column.coffee</a></li><li><a href="../files/modules.DownloadHandler.coffee.html">modules/DownloadHandler.coffee</a></li><li><a href="../files/modules.Format.coffee.html">modules/Format.coffee</a></li><li><a href="../files/modules.YtVideo.coffee.html">modules/YtVideo.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div><div class="container-fluid content"><div class="row"><div data-spy="affix" class="hidden-xs sidebar col-sm-3"><div class="cormo-sidenav"><div class="panel panel-default"><div id="undefined_body" class="panel-collapse collapse in"><ul class="nav nav-pills nav-stacked"><li><a href="../files/App.coffee.html">App.coffee</a></li></ul></div></div><div class="panel panel-default"><div data-toggle="collapse" data-target="#modules/_body" class="panel-heading">modules/<span class="pull-right glyphicon"></span></div><div id="modules/_body" class="panel-collapse collapse in"><ul class="nav nav-pills nav-stacked"><li><a href="../files/modules.Column.coffee.html">Column.coffee</a></li><li><a href="../files/modules.DownloadHandler.coffee.html">DownloadHandler.coffee</a></li><li><a href="../files/modules.Format.coffee.html">Format.coffee</a></li><li class="active"><a href="../files/modules.YtVideo.coffee.html">YtVideo.coffee</a></li></ul></div></div></div></div><div class="col-sm-9 col-sm-offset-3"><section><h1>modules/YtVideo.coffee</h1></section><pre class="prettyprint">###
+# Module which contains Youtube video class
+# @module YtVideo
+###
+tls = require 'tls'
+qs = require 'querystring'
+EventEmitter = require('events').EventEmitter
+Format = require './Format.coffee'
+
+GET_VIDEO_INFO_PATH = '/get_video_info?el=detailpage&amp;video_id='
+
+###
+# YouTube video
+# @extends EventEmitter
+###
+class YtVideo extends EventEmitter
+
+  ###
+  # URL of YouTube video
+  # @property Url
+  ###
+
+  ###
+  # @param {String} Url YouTube video link
+  ###
+	constructor: (@Url) -&gt;
+		EventEmitter.call this
+
+  ###
+  # Get id of video
+  # @return {Boolean} false when wrong format
+  # @throws {Event} Throws event 'error' when link format is bad.
+  ###
+	getId: -&gt;
+		match = @Url.match /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&amp;v=)([^#\&amp;\?]*).*/
+		if match &amp;&amp; match[2].length == 11
+			match[2]
+		else
+			@emit 'error', 'Invalid YouTube link.'
+			false
+
+	getInfo: -&gt;
+		@Id = @getId()
+		if !@Id
+			return
+		host = 'www.youtube.com'
+		path = GET_VIDEO_INFO_PATH + @Id
+		raw = ''
+		@Formats = []
+		self = this
+		cleartextStream = tls.connect 443, host, -&gt;
+			@on 'data', (d) -&gt;
+				raw += d
+
+			@on 'end', =&gt;
+				data = qs.parse raw.split(&quot;\r\n\r\n&quot;)[1].split(&quot;\r\n&quot;)[1]
+
+				self.Title = data.title
+				self.ThumbnailUrl = data.thumbnail_url
+
+				resolutions = data.fmt_list.split(',').map (v) -&gt;
+					v = v.split('/')[1]
+
+				encoded = data.url_encoded_fmt_stream_map.split(',').map (v, i) -&gt;
+					v = qs.parse v
+					self.Formats.push new Format v.fallback_host, v.itag, v.quality, v.type, v.url, resolutions[i]
+
+				self.emit 'info'
+
+			@write 'GET ' + path + ' HTTP/1.1\r\n' +
+				'Host: ' + host + '\r\n' +
+				'Connection: close\r\n' +
+				'\r\n'
+
+module.exports = YtVideo</pre></div></div></div><script src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script src="../script.js"></script><a href="https://github.com/Kuzirashi/cross-video-downloader"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

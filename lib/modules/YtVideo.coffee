@@ -1,32 +1,36 @@
 ###
+# Module which contains Youtube video class
 # @module YtVideo
 ###
 tls = require 'tls'
 qs = require 'querystring'
 EventEmitter = require('events').EventEmitter
-Format 	= require './Format.coffee'
+Format = require './Format.coffee'
 
 GET_VIDEO_INFO_PATH = '/get_video_info?el=detailpage&video_id='
 
-##
-# Youtube video class
-# @class YtVideo
+###
+# YouTube video
 # @extends EventEmitter
-module.exports = class YtVideo extends EventEmitter
-	###
-	# Constructor
-	# @param {String} Url YouTube link
-	###
+###
+class YtVideo extends EventEmitter
+
+  ###
+  # URL of YouTube video
+  # @property Url
+  ###
+
+  ###
+  # @param {String} Url YouTube video link
+  ###
 	constructor: (@Url) ->
 		EventEmitter.call this
 
-	###
-	# Get id of video
-	# @return {Boolean} false when wrong format
-	# @throws {Error event} Throws error when link format is bad.
-	# @memberof YtVideo
-	# @method getId
-	###
+  ###
+  # Get id of video
+  # @return {Boolean} false when wrong format
+  # @throws {Event} Throws event 'error' when link format is bad.
+  ###
 	getId: ->
 		match = @Url.match /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
 		if match && match[2].length == 11
@@ -35,9 +39,6 @@ module.exports = class YtVideo extends EventEmitter
 			@emit 'error', 'Invalid YouTube link.'
 			false
 
-	###
-	# Get Info
-	###
 	getInfo: ->
 		@Id = @getId()
 		if !@Id
@@ -70,3 +71,5 @@ module.exports = class YtVideo extends EventEmitter
 				'Host: ' + host + '\r\n' +
 				'Connection: close\r\n' +
 				'\r\n'
+
+module.exports = YtVideo

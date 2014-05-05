@@ -1,5 +1,14 @@
 output: docs
 title: Cross Video Downloader
-quite: false
+quite: true
+files: true
+external-types:
+  EventEmitter: http://nodejs.org/api/events.html#events_class_events_eventemitter
+  Ember.Object: http://emberjs.com/api/classes/Ember.Object.html
+  Database: http://www.w3.org/TR/webdatabase/#database
 sources:
   - lib
+github:
+  repository: https://github.com/Kuzirashi/cross-video-downloader
+  ribbon: true
+  sourcelink: true

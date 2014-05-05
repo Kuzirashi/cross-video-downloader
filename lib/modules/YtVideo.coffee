@@ -14,17 +14,15 @@ GET_VIDEO_INFO_PATH = '/get_video_info?el=detailpage&video_id='
 # @extends EventEmitter
 ###
 class YtVideo extends EventEmitter
+  ##
+  # @param {String} Url YouTube video link
+	constructor: (@Url) ->
+		EventEmitter.call this
 
   ###
   # URL of YouTube video
   # @property Url
   ###
-
-  ###
-  # @param {String} Url YouTube video link
-  ###
-	constructor: (@Url) ->
-		EventEmitter.call this
 
   ###
   # Get id of video

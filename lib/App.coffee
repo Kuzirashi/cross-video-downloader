@@ -14,8 +14,25 @@ DS.JSONSerializer.reopen
 
 App.ApplicationAdapter = DS.FixtureAdapter.extend()
 
+###
+# Video format.
+# @class Format
+# @extends DS.Model
+###
 App.Format = DS.Model.extend
+	##
+	# Video bound to format.
+	# @property video
+	# @type {Video}
+	# @memberOf Format
 	video: DS.belongsTo 'video'
+
+	###
+	# Video's itag.
+	# @property itag
+	# @type {String}
+	# @memberOf Format
+	###
 	itag: DS.attr 'string'
 	quality: DS.attr 'string'
 	resolution: DS.attr 'string'
@@ -66,7 +83,7 @@ App.ConfigKey = Em.Object.extend
 	Value: ''
 
 ###
-# Class responsible for managing user's config
+# Class responsible for managing user's config.
 # @class Config
 # @extends Ember.Object
 # @namespace Application
@@ -85,14 +102,14 @@ App.Config = Em.Object.extend
 	]
 
   ###
-  # Config settings array
+  # Config settings array.
   # @property keys
   # @type Array
   # @memberOf Config
   ###
 
   ###
-  # Columns of config's SQL table representation 
+  # Columns of config's SQL table representation.
   # @property columns
   # @type Array
   # @memberOf Config
@@ -157,11 +174,11 @@ App.Config = Em.Object.extend
 			location.reload()
 
 db = openDatabase 'app-db', '1.0', 'Cross platform YouTube downloader database.', 2 * 1024 * 1024
-console.log(db);
 
 config = App.Config.create()
 config.insert db, true
 config.setValue 'platform', os.platform(), db
+config.getLatestData db
 
 App.PreferencesController = Em.Controller.extend
 	model: config
@@ -178,8 +195,21 @@ App.VideoController = Em.Controller.extend
 	actions:
 		download: ->
 			@store.find('format', @get('selectedFormat')).then (f) ->
-				downloadHandler = new DownloadHandler();
-				alert 'Link do pobrania filmiku: ' + f.get('url')
+				downloadHandler = new DownloadHandler()
+				###
+				doesn't work \/\/\/\/\/\/\/\/
+				-----------------------------
+				downloadHandler.on 'progress', (currentLength, totalLength) ->
+					console.log currentLength / totalLength * 100 + '%'
+				downloadHandler.on 'end', ->
+					alert 'Success! File downloaded.'
+				-----------------------------
+				doesn't work ^^^^^^^^^^^^^^^
+				### 
+				path = config.get('keys').filterBy('Name', 'downloadPath')[0].get('Value')
+				
+				if downloadHandler.download(f.get('url'), path, f.get('video').get('filenameTitle')) == false
+					alert 'Specify download path first! Go to preferences tab.'
 
 App.IndexView = Em.View.extend()
 App.VideoView = Em.View.extend()

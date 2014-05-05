@@ -16,13 +16,13 @@
   ],
   "window": {
     "title": "Cross Youtube Downloader",
-    "width": 800,
+    "width": 580,
     "height": 600,
-    "position": "mouse",
+    "position": "center",
     "min_width": 400,
     "min_height": 200,
-    "toolbar": true,
-    "frame": true
+    "toolbar": false,
+    "frame": false
   },
   "webkit": {
     "plugin": true

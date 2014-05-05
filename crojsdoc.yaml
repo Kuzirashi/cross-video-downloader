@@ -6,6 +6,7 @@ external-types:
   EventEmitter: http://nodejs.org/api/events.html#events_class_events_eventemitter
   Ember.Object: http://emberjs.com/api/classes/Ember.Object.html
   Database: http://www.w3.org/TR/webdatabase/#database
+  DS.Model: http://emberjs.com/api/data/classes/DS.Model.html
 sources:
   - lib
 github:

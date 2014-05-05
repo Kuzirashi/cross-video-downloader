@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Cross Video Downloader - App.coffee</title><script>if (location.protocol.match(/^http/) && location.pathname.match('\.html') === null && location.pathname.slice(-1) !== '/') {
+  location.href = location.href + '/';
+}</script><link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" type="text/css"><link href="../google-code-prettify/prettify.css" rel="stylesheet" type="text/css"><link href="../style.css" rel="stylesheet" type="text/css"></head><body data-spy="scroll" data-target=".sidebar"><div class="navbar navbar-default navbar-fixed-top"><div class="container-fluid"><ul class="nav navbar-nav"><li><a href="../index.html">Home</a></li><li><a href="../classes/index.html">Classes</a></li><li class="dropdown active"><a data-toggle="dropdown" href="#" class="dropdown-toggle">Files - App.coffee <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="../files/App.coffee.html">App.coffee</a></li><li><a href="../files/modules.Column.coffee.html">modules/Column.coffee</a></li><li><a href="../files/modules.DownloadHandler.coffee.html">modules/DownloadHandler.coffee</a></li><li><a href="../files/modules.Format.coffee.html">modules/Format.coffee</a></li><li><a href="../files/modules.YtVideo.coffee.html">modules/YtVideo.coffee</a></li></ul></li></ul><div class="options"><label class="checkbox"><input id="options-private" type="checkbox"> Private </label></div></div></div><div class="container-fluid content"><div class="row"><div data-spy="affix" class="hidden-xs sidebar col-sm-3"><div class="cormo-sidenav"><div class="panel panel-default"><div id="undefined_body" class="panel-collapse collapse in"><ul class="nav nav-pills nav-stacked"><li class="active"><a href="../files/App.coffee.html">App.coffee</a></li></ul></div></div><div class="panel panel-default"><div data-toggle="collapse" data-target="#modules/_body" class="panel-heading">modules/<span class="pull-right glyphicon"></span></div><div id="modules/_body" class="panel-collapse collapse in"><ul class="nav nav-pills nav-stacked"><li><a href="../files/modules.Column.coffee.html">Column.coffee</a></li><li><a href="../files/modules.DownloadHandler.coffee.html">DownloadHandler.coffee</a></li><li><a href="../files/modules.Format.coffee.html">Format.coffee</a></li><li><a href="../files/modules.YtVideo.coffee.html">YtVideo.coffee</a></li></ul></div></div></div></div><div class="col-sm-9 col-sm-offset-3"><section><h1>App.coffee</h1></section><pre class="prettyprint">YtVideo = require './lib/modules/YtVideo.coffee'
+DownloadHandler = require './lib/modules/DownloadHandler.coffee'
+Column = require('./lib/modules/Column.coffee');
+
+window.App = Em.Application.create()
+
+DS.JSONSerializer.reopen
+	serializeHasMany: (record, json, relationship) -&gt;
+		key = relationship.key
+		relationshipType = DS.RelationshipChange.determineRelationshipType record.constructor, relationship
+
+		if relationshipType == 'manyToNone' || relationshipType == 'manyToMany' || relationshipType == 'manyToOne'
+			json[key] = Em.get(record, key).mapBy 'id'
+
+App.ApplicationAdapter = DS.FixtureAdapter.extend()
+
+App.Format = DS.Model.extend
+	video: DS.belongsTo 'video'
+	itag: DS.attr 'string'
+	quality: DS.attr 'string'
+	resolution: DS.attr 'string'
+	type: DS.attr 'string'
+	url: DS.attr 'string'
+	label: (-&gt;
+		@get('quality') + ' ' + @get('resolution') + ' ' + @get('type')
+	).property 'quality', 'resolution', 'type'
+
+App.Video = DS.Model.extend
+	title: DS.attr 'string'
+	thumbnailUrl: DS.attr 'string'
+	formats: DS.hasMany 'format', async: true
+	filenameTitle: (-&gt;
+		@get('title').replace /[\\/:&quot;*?&lt;&gt;|]+/g, ''
+	).property 'title'
+
+App.Router.map -&gt;
+	@route 'queue'
+	@route 'about'
+	@route 'preferences'
+	@route 'video', path: 'video/:video_id'
+
+App.IndexRoute = Em.Route.extend
+	actions:
+		parse: -&gt;
+			ytVideo = new YtVideo @get 'controller.link'
+
+			ytVideo.on 'error', (e) -&gt;
+				alert e
+
+			self = this
+			ytVideo.on 'info', -&gt;
+				video = self.store.createRecord 'video', id: @Id, title: @Title, thumbnailUrl: @ThumbnailUrl
+
+				@Formats.map (i) -&gt;
+					format = self.store.createRecord 'format', itag: i.itag, quality: i.quality, resolution: i.resolution, type: i.type, url: i.url
+					video.get('formats').then (f) -&gt;
+						f.pushObject format
+
+				self.transitionToAnimated 'video', main: 'fade', @Id
+
+			ytVideo.getInfo()
+
+App.ConfigKey = Em.Object.extend
+	Name: ''
+	DefaultValue: ''
+	Value: ''
+
+###
+# Class responsible for managing user's config
+# @class Config
+# @extends Ember.Object
+# @namespace Application
+###
+App.Config = Em.Object.extend
+	keys: [
+		App.ConfigKey.create
+			Name: 'downloadPath'
+			DefaultValue: ''
+		App.ConfigKey.create
+			Name: 'language'
+			DefaultValue: 'en'
+		App.ConfigKey.create
+			Name: 'platform'
+			DefaultValue: 'windows'
+	]
+
+  ###
+  # Config settings array
+  # @property keys
+  # @type Array
+  # @memberOf Config
+  ###
+
+  ###
+  # Columns of config's SQL table representation 
+  # @property columns
+  # @type Array
+  # @memberOf Config
+  ###
+	columns: [
+		new Column 'Id', 'INTEGER', false, true, true
+		new Column 'Key', 'TEXT', true, false, false, true
+		new Column 'Value', 'TEXT'
+	]
+
+  ###
+  # Get complete SQL code to create config table.
+  # @method getCreateTableSQL
+  # @return {String} SQL code for config table.
+  # @memberOf Config
+  ###
+	getCreateTableSQL: -&gt;
+		columns = @get 'columns'
+		len = columns.length
+		columnsSQL = ''
+		for column, i in columns
+			columnsSQL += if len - 1 is i then column.getSQL() else column.getSQL() + ', '
+		'CREATE TABLE IF NOT EXISTS `config` (' + columnsSQL + ')'
+
+  ###
+  # Inserts config table to database.
+  # @method insert
+  # @param {Database} database Instance of Database to be used to insert data.
+  # @param {Boolean} createTable Determines if method should create table before data insert.
+  # @memberOf Config
+  ###
+	insert: (database, createTable) -&gt;
+		columns = @get 'columns'
+		colNames = ''
+		len = columns.length
+		for column, i in columns when column.Name isnt 'Id'
+			colNames += if len-1 is i then '`' + column.Name + '`' else '`' + column.Name + '`, '
+		keys = @get 'keys'
+		database.transaction (tx) =&gt;
+			if createTable
+				tx.executeSql @getCreateTableSQL()
+			for key in keys
+				value = if !!key.get 'Value' then key.get 'Value' else key.get 'DefaultValue'
+				tx.executeSql 'INSERT INTO `config` (' + colNames + ') VALUES (&quot;' + key.get('Name') + '&quot;, &quot;' + value + '&quot;)'
+	
+
+	setValue: (key, value, db) -&gt;
+		db.transaction (tx) -&gt;
+			tx.executeSql 'UPDATE `config` SET `Value` = &quot;' + value + '&quot; WHERE `Key` = &quot;' + key + '&quot;'
+		@get('keys').filterBy('Name', key)[0].set 'Value', value
+
+	getLatestData: (db) -&gt;
+		that = this
+		db.transaction (tx) =&gt;
+			tx.executeSql 'SELECT * FROM `config`', [], (tx, result) -&gt;
+				for row, i in result.rows
+					that.get('keys')[i].set 'Value', result.rows.item(i).Value
+
+	resetConfig: (db) -&gt;
+		db.transaction (tx) -&gt;
+			tx.executeSql 'DROP TABLE `config`'
+			location.reload()
+
+db = openDatabase 'app-db', '1.0', 'Cross platform YouTube downloader database.', 2 * 1024 * 1024
+console.log(db);
+
+config = App.Config.create()
+config.insert db, true
+config.setValue 'platform', os.platform(), db
+
+App.PreferencesController = Em.Controller.extend
+	model: config
+	directory: (-&gt;
+		downloadPath = @get('model.keys').filterBy('Name', 'downloadPath').get('firstObject').get 'Value'
+		if !!downloadPath
+			@get('model').setValue 'downloadPath', downloadPath, db
+		@get('model').getLatestData db
+		downloadPath
+	).property 'model.keys.@each.Value'
+
+App.VideoController = Em.Controller.extend
+	selectedFormat: 'fixture-0'
+	actions:
+		download: -&gt;
+			@store.find('format', @get('selectedFormat')).then (f) -&gt;
+				downloadHandler = new DownloadHandler();
+				alert 'Link do pobrania filmiku: ' + f.get('url')
+
+App.IndexView = Em.View.extend()
+App.VideoView = Em.View.extend()
+Em.TextField.reopen
+	attributeBindings: ['nwdirectory']
+
+App.DirectoryChooser = Em.TextField.extend
+	type: 'file'
+	classNames: ['directory-chooser']
+	change: (evt) -&gt;
+		config.get('keys').filterBy('Name', 'downloadPath')[0].set 'Value', evt.target.value
+
+App.ChooseDirectoryButton = Em.View.extend
+	tagName: 'span'
+	classNames: ['btn', 'btn-blue']
+	template: Em.Handlebars.compile 'Choose download directory'
+	click: -&gt;
+		$('.directory-chooser').click()
+
+App.PreferencesView = Em.View.extend
+	controller: App.PreferencesController.create
+
+App.DropTable = Em.View.extend
+	modalActive: false
+	tagName: 'button'
+	classNames: ['btn', 'btn-red']
+	attributeBindings: ['disabled']
+	disabled: false
+	click: -&gt;
+		@set 'disabled', true
+		@set 'modalActive', true
+	Modal: (-&gt;
+		self = this
+		$('&lt;div title=&quot;Confirm action&quot;&gt;&lt;p&gt;Are you sure you want to reset preferences?&lt;/p&gt;&lt;/div&gt;').dialog
+			height: 200
+			modal: true
+			buttons:
+				Yes: -&gt;
+					config.resetConfig db
+					$(this).dialog 'close'
+				No: -&gt;
+					$(this).dialog 'close'
+					self.set 'disabled', false
+					self.set 'modalActive', false
+		''
+	).property 'modalActive'</pre></div></div></div><script src="http://code.jquery.com/jquery-1.11.0.min.js"></script><script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script><script src="../google-code-prettify/prettify.js"></script><script src="../script.js"></script><a href="https://github.com/Kuzirashi/cross-video-downloader"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub" class="github-ribbon"></a></body></html>

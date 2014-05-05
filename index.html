@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Cross Video Downloader by Kuzirashi</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Cross Video Downloader</h1>
+        <h2>Youtube downloader that runs on Linux, Mac OSX and Windows written in Javascript for node-webkit.</h2>
+        <a href="https://github.com/Kuzirashi/cross-video-downloader" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="cross-video-downloader" class="anchor" href="#cross-video-downloader"><span class="octicon octicon-link"></span></a>Cross Video Downloader</h1>
+
+<hr><p>Video downloader from YouTube that runs on Linux, Mac OSX and Windows written in node-webkit.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>First, download project files. You can do this via:</p>
+
+<pre lang="git"><code>git clone https://github.com/Kuzirashi/cross-video-downloader.git
+</code></pre>
+
+<p>Then, you need <a href="https://github.com/jashkenas/coffee-script">CoffeeScript</a> installed. If you have <a href="https://github.com/npm/npm">node package manager</a> you can satisfy all requirements by running following command from application's folder:</p>
+
+<div class="highlight highlight-bash"><pre>npm install
+</pre></div>
+
+<p>You also need <a href="https://github.com/rogerwang/node-webkit">node-webkit</a>'s prebuilt binary for your OS.</p>
+
+<h2>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h2>
+
+<p>You have to zip application's folder and give it <code>.nw</code>. Then run it using node-webkit's binary.</p>
+
+<p>On Linux you can create bash(<code>.sh</code>) script(you get it when you download project) in application's directory:</p>
+
+<div class="highlight highlight-bash"><pre><span class="c">#!/bin/bash</span>
+<span class="nv">WEBKIT_LOC</span><span class="o">=</span><span class="s2">"../node-webkit-v0.9.2-linux-x64/"</span> <span class="c">#change to node-webkit path</span>
+zip -r app.nw * <span class="c">#create zip file with .nw extension</span>
+mv app.nw <span class="nv">$WEBKIT_LOC</span> <span class="c">#move .nw file to node-webkit's directory</span>
+<span class="nb">cd</span> <span class="nv">$WEBKIT_LOC</span> <span class="c">#go to node-webkit directory</span>
+./nw app.nw <span class="c">#run application</span>
+</pre></div>
+
+<p>Then you can use:</p>
+
+<div class="highlight highlight-bash"><pre>./run.sh
+</pre></div>
+
+<h2>
+<a name="license-and-attributions" class="anchor" href="#license-and-attributions"><span class="octicon octicon-link"></span></a>License and attributions</h2>
+
+<p>Cross Video Downloader is licensed under <a href="https://github.com/Kuzirashi/cross-video-downloader/blob/master/LICENSE">MIT License</a>.</p>
+
+<p><a href="https://github.com/nateify/elementary-CSS/">elementary CSS</a> is licensed by Nate Cohen under the <a href="http://opensource.org/licenses/MIT">MIT License</a>.</p>
+
+<p><a href="http://danrabbit.deviantart.com/art/elementary-Icons-65437279">elementary Icons</a> are liscensed by <a href="http://danrabbit.deviantart.com/">Daniel ForĂŠ</a> under the <a href="http://www.gnu.org/licenses/gpl-3.0.txt">GPL</a>.</p>
+
+<p><a href="https://github.com/billysbilling/ember-animated-outlet">Ember Animated Outlet</a> is licensed under the <a href="https://github.com/billysbilling/ember-animated-outlet/blob/master/LICENSE">MIT License</a>.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Kuzirashi/cross-video-downloader/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Kuzirashi/cross-video-downloader/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Kuzirashi/cross-video-downloader"></a> is maintained by <a href="https://github.com/Kuzirashi">Kuzirashi</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>

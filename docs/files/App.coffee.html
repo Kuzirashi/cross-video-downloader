@@ -29,13 +29,18 @@ App.Format = DS.Model.extend
 	# @memberOf Format
 	video: DS.belongsTo 'video'
 
+  ###
+  # Video's itag.
+  # @property itag
+  # @type {String}
+  # @memberOf Format
+  ###
+	itag: DS.attr 'string'
 	###
-	# Video's itag.
-	# @property itag
-	# @type {String}
+	# Video's quality.
+	# @type String
 	# @memberOf Format
 	###
-	itag: DS.attr 'string'
 	quality: DS.attr 'string'
 	resolution: DS.attr 'string'
 	type: DS.attr 'string'

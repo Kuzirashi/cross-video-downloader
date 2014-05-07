@@ -36,5 +36,8 @@
   ],
   "dependencies": {
     "coffee-script": "^1.7.1"
+  },
+  "devDependencies": {
+    "crojsdoc": "^0.8.3"
   }
 }

@@ -1,5 +1,7 @@
 #Cross Video Downloader
 ----
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/Kuzirashi/cross-video-downloader.svg)](https://greenkeeper.io/)
 Video downloader from YouTube that runs on Linux, Mac OSX and Windows written in node-webkit.
 
 ##Installation
